@@ -44,13 +44,13 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: WORDPRESS_DB_HOST
+            - name: DB_HOST
               value: {{ .Values.externalDatabase.host }}
-            - name: WORDPRESS_DB_USER
+            - name: DB_USER
               value: {{ .Values.externalDatabase.user }}
-            - name: WORDPRESS_DB_PASSWORD
+            - name: DB_PASSWORD
               value: {{ .Values.externalDatabase.password }}
-            - name: WORDPRESS_DB_NAME
+            - name: DB_NAME
               value: {{ .Values.externalDatabase.database }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
