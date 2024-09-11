@@ -1,26 +1,19 @@
-# Default values for application.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for WordPress Helm chart
 
 replicaCount: 1
 
 image:
   repository: wordpress
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "php8.3"
+  tag: "php8.3-apache"  # WordPress image tag
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 podAnnotations: {}
@@ -59,10 +52,6 @@ ingress:
        - wordpress.oracles.gift
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -71,14 +60,58 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+persistence:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+
+mariadb:
+  enabled: true
+  auth:
+    rootPassword: "rootpassword"   # Change this
+    username: "wordpress"          # WordPress DB user
+    password: "wordpresspassword"  # WordPress DB password
+    database: "wordpress"          # WordPress DB name
+  primary:
+    persistence:
+      enabled: true
+      storageClass: ""
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
+
+env:
+  - name: WORDPRESS_DB_HOST
+    value: "mariadb.wordpress.svc.cluster.local"
+  - name: WORDPRESS_DB_USER
+    value: "wordpress"
+  - name: WORDPRESS_DB_PASSWORD
+    value: "wordpresspassword"
+  - name: WORDPRESS_DB_NAME
+    value: "wordpress"
+
+affinity: {}
 
 tolerations: []
 
-affinity: {}
+nodeSelector: {}
+
+# If using an external database, disable MariaDB and provide external DB credentials
+externalDatabase:
+  enabled: false
+  host: ""
+  user: ""
+  password: ""
+  database: ""
+  port: 3306
+
+# Extra volumes and volume mounts
+extraVolumes: []
+extraVolumeMounts: []
