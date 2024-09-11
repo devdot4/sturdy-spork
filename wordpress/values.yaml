@@ -7,7 +7,7 @@ image:
   pullPolicy: IfNotPresent
   tag: "php8.3-apache"  # WordPress image tag
 
-imagePullSecrets: []
+imagePullSecrets: []  # Use if pulling from a private registry
 nameOverride: ""
 fullnameOverride: ""
 
@@ -52,6 +52,7 @@ ingress:
        - wordpress.oracles.gift
 
 resources: {}
+  # You can define resources like limits and requests here:
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -75,7 +76,7 @@ persistence:
 mariadb:
   enabled: true
   auth:
-    rootPassword: "rootpassword"   # Change this
+    rootPassword: "rootpassword"   # Change this to a secure value
     username: "wordpress"          # WordPress DB user
     password: "wordpresspassword"  # WordPress DB password
     database: "wordpress"          # WordPress DB name
@@ -88,6 +89,7 @@ mariadb:
       size: 8Gi
 
 env:
+  # Database configuration
   - name: WORDPRESS_DB_NAME
     value: "wordpress"
   - name: WORDPRESS_DB_USER
@@ -103,7 +105,7 @@ tolerations: []
 
 nodeSelector: {}
 
-# If using an external database, disable MariaDB and provide external DB credentials
+# Configuration for external databases if not using internal MariaDB
 externalDatabase:
   enabled: false
   host: ""
@@ -112,6 +114,6 @@ externalDatabase:
   database: ""
   port: 3306
 
-# Extra volumes and volume mounts
+# Extra volumes and volume mounts for custom configurations
 extraVolumes: []
 extraVolumeMounts: []
