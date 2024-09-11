@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wordpress.fullname" . }}
+  name: {{ include "application.fullname" . }}
   labels:
-    {{- include "wordpress.labels" . | nindent 4 }}
+    {{- include "application.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "wordpress.selectorLabels" . | nindent 6 }}
+      {{- include "application.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,8 +18,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "wordpress.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- include "application.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "wordpress.serviceAccountName" . }}
+      serviceAccountName: {{ include "application.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -40,40 +40,32 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-
-          env:
-            - name: WORDPRESS_DB_NAME
-              value: {{ .Values.env.WORDPRESS_DB_NAME | quote }}
-            - name: WORDPRESS_DB_USER
-              value: {{ .Values.env.WORDPRESS_DB_USER | quote }}
-            - name: WORDPRESS_DB_PASSWORD
-              value: {{ .Values.env.WORDPRESS_DB_PASSWORD | quote }}
-            - name: WORDPRESS_DB_HOST
-              value: {{ .Values.env.WORDPRESS_DB_HOST | quote }}
-
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
