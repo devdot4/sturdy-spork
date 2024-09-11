@@ -1,4 +1,4 @@
-replicaCount: 1  # You can change this to 3 for high availability if required
+replicaCount: 1
 
 image:
   repository: wordpress
@@ -25,33 +25,28 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-tls:
-  - secretName: wordpress-tls
-    hosts:
-      - wordpress.oracles.gift
+  tls:
+   - secretName: wordpress-tls
+     hosts:
+       - wordpress.oracles.gift
 
 resources: {}
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-
-nodeSelector: {}
-tolerations: []
-affinity: {}
-
-# PostgreSQL Database Configuration
+# PostgreSQL Configuration
 postgresql:
-  enabled: true  # Set to true to enable PostgreSQL
-  postgresqlUsername: wordpress  # Username for the WordPress database
-  postgresqlPassword: db$123  # Password for the WordPress database user
-  postgresqlDatabase: wordpress  # Name of the WordPress database
+  enabled: true
+  postgresqlUsername: wordpress
+  postgresqlPassword: db$123  # Replace with base64 encoded password in secret
+  postgresqlDatabase: wordpress
   persistence:
     enabled: true
-    size: 10Gi  # Adjust the size as needed
+    size: 10Gi
 
-# External database config for WordPress (disabled since using PostgreSQL)
+# External database (if needed)
 externalDatabase:
   enabled: false
+  host: ""
+  user: ""
+  password: ""
+  database: ""
+  secretName: ""
