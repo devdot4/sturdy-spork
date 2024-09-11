@@ -15,9 +15,9 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  annotations: 
+  annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: letsencrypt-prod
     acme.cert-manager.io/http01-edit-in-place: "true"
   hosts:
@@ -25,10 +25,10 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-tls:
- - secretName: wordpress-tls
-   hosts:
-     - wordpress.oracles.gift
+  tls:
+    - secretName: wordpress-tls
+      hosts:
+        - wordpress.oracles.gift
 
 resources: {}
 
