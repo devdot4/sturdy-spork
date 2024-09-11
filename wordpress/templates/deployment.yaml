@@ -41,7 +41,6 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
 
-          # Environment variables for WordPress database connection
           env:
             - name: WORDPRESS_DB_NAME
               value: {{ .Values.env.WORDPRESS_DB_NAME | quote }}
