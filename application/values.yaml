@@ -1,5 +1,5 @@
 # WordPress Deployment Configuration
-replicaCount: 1  # Set to 3 if you want multiple WordPress replicas for high availability
+replicaCount: 3  # Set to 3 if you want multiple WordPress replicas for high availability
 
 image:
   repository: wordpress
