@@ -1,31 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "application.fullname" . }}-postgresql
+  name: {{ include "application.fullname" . }}
   labels:
     app: {{ include "application.name" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "application.name" . }}-postgresql
+      app: {{ include "application.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "application.name" . }}-postgresql
+        app: {{ include "application.name" . }}
     spec:
       containers:
-      - name: postgresql
-        image: "bitnami/postgresql:latest"
+      - name: wordpress
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: 5432
+        - containerPort: 80
         env:
-        - name: POSTGRES_USER
+        - name: WORDPRESS_DB_HOST
+          value: {{ include "application.fullname" . }}-postgresql
+        - name: WORDPRESS_DB_USER
           value: {{ .Values.postgresql.postgresqlUsername }}
-        - name: POSTGRES_PASSWORD
+        - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ include "application.fullname" . }}-postgresql-secret
               key: postgresql-password
-        - name: POSTGRES_DB
+        - name: WORDPRESS_DB_NAME
           value: {{ .Values.postgresql.postgresqlDatabase }}
