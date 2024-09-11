@@ -105,3 +105,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+mariadb:
+  enabled: true  # Set to true if you're using the built-in MariaDB
+  db:
+    name: wordpress  # Database name
+    user: wordpress  # Database user
+    password: db$123  # Database password
+  rootUser:
+    password: root$123  # Root password for MariaDB
