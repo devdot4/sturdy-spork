@@ -1,6 +1,6 @@
 # Default values for the WordPress Helm chart
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: wordpress
@@ -97,5 +97,6 @@ externalDatabase:
 
 # Ensure WordPress connects to the correct database
 wordpress:
+  debug: true
   mariadb:
     enabled: true
