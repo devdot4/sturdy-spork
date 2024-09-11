@@ -1,32 +1,17 @@
-# WordPress Deployment Configuration
-replicaCount: 3  # Set to 3 if you want multiple WordPress replicas for high availability
+replicaCount: 1  # You can change this to 3 for high availability if required
 
 image:
   repository: wordpress
   pullPolicy: IfNotPresent
   tag: "latest"
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  name: ""
-
-podAnnotations: {}
-podLabels: {}
-
-# Security and permissions for WordPress pods
-podSecurityContext: {}
-securityContext: {}
 
 service:
   type: ClusterIP
   port: 80
 
-# Ingress Configuration for WordPress
 ingress:
   enabled: true
   className: "nginx"
@@ -40,21 +25,13 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls:
-   - secretName: wordpress-tls
-     hosts:
-       - wordpress.oracles.gift
+tls:
+  - secretName: wordpress-tls
+    hosts:
+      - wordpress.oracles.gift
 
-# Resource limits and requests (you can adjust these according to your cluster capacity)
 resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
-# Autoscaling Configuration (set enabled to false if not using autoscaling)
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -65,35 +42,16 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-# MariaDB Configuration
-mariadb:
-  enabled: true  # Set to true to enable the built-in MariaDB deployment
-  db:
-    name: wordpress  # Name of the WordPress database
-    user: wordpress  # Username for WordPress database
-    password: db$123  # Password for the WordPress database user
-  rootUser:
-    password: root$123  # Root password for MariaDB
+# PostgreSQL Database Configuration
+postgresql:
+  enabled: true  # Set to true to enable PostgreSQL
+  postgresqlUsername: wordpress  # Username for the WordPress database
+  postgresqlPassword: db$123  # Password for the WordPress database user
+  postgresqlDatabase: wordpress  # Name of the WordPress database
+  persistence:
+    enabled: true
+    size: 10Gi  # Adjust the size as needed
 
-# WordPress External Database Configuration
-# This section can be ignored if you're using the built-in MariaDB
+# External database config for WordPress (disabled since using PostgreSQL)
 externalDatabase:
   enabled: false
-  host: wordpress-mariadb  # The service name for MariaDB within the cluster
-  user: wordpress  # Database user
-  password: db$123  # Database password
-  database: wordpress  # Database name
-
-# Persistent Volume for WordPress (adjust the size as needed)
-persistence:
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 10Gi
-
-# Persistent Volume for MariaDB (adjust the size as needed)
-mariadb:
-  primary:
-    persistence:
-      enabled: true
-      accessMode: ReadWriteOnce
-      size: 10Gi
