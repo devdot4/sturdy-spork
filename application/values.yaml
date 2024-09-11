@@ -46,3 +46,9 @@ externalDatabase:
   enabled: false  # Set to false since we are using the internal MariaDB
 
 resources: {}
+
+autoscaling:
+  enabled: false  # Set to true if you want autoscaling
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
