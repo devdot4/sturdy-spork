@@ -78,20 +78,20 @@ affinity: {}
 mariadb:
   enabled: true
   auth:
-    rootPassword: admin$1234 # Set this to a secure root password
-    database: wordpress
-    username: wordpress
-    password: dev$123 # Set this to a secure user password
+    rootPassword: example_root_password # Default placeholder for root password
+    database: wordpress # Default database name
+    username: wordpress # Default database username
+    password: example_password # Default placeholder for user password
   primary:
     persistence:
       enabled: true
-      size: 8Gi # Adjust size as needed for your environment
+      size: 8Gi # Default persistence size
 
 # External Database (set to false because we are using MariaDB)
 externalDatabase:
   host: mariadb
   user: wordpress
-  password: dev$123 # This should match the password set in the mariadb.auth section
+  password: example_password # Default placeholder for user password
   database: wordpress
   port: 3306
 
