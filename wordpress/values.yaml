@@ -89,7 +89,7 @@ mariadb:
 
 env:
   - name: WORDPRESS_DB_HOST
-    value: "mariadb.wordpress.svc.cluster.local"
+    value: "wordpress-mariadb.wordpress.svc.cluster.local"
   - name: WORDPRESS_DB_USER
     value: "wordpress"
   - name: WORDPRESS_DB_PASSWORD
